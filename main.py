@@ -8,12 +8,13 @@ def play():
     time.sleep(1)
     while video.cap.isOpened():
         myFrame.video_play(video.frame)
-        time.sleep(0.02)
+        time.sleep(0.05)
     print('play therad exit')
 
 def main():
     global myFrame
     global video
+    global exerciseDetector
 
     capture = True
 
