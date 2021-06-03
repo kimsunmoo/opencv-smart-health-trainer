@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-
+import constant
 class ExerciseDetector():
     def __init__(self):
         self.mp_drawing = mp.solutions.drawing_utils
@@ -30,25 +30,20 @@ class ExerciseDetector():
             landmarks = results.pose_landmarks.landmark
 
             # Get coordinates
-            shoulder = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            elbow = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
-                    landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
-            wrist = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                    landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+            a, b, c = self.getCoordinates(landmarks)
 
             # Calculate angle
-            angle = self.calculate_angle(shoulder, elbow, wrist)
+            angle = self.calculate_angle(a, b, c)
 
             # Visualize angle
             cv2.putText(image, str(angle),
-                        tuple(np.multiply(elbow, [640, 480]).astype(int)),
+                        tuple(np.multiply(b, [640, 480]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
                         )
             if angle > 160:
-                stage = "down"
-            if angle < 30 and stage == 'down':
-                stage = "up"
+                self.stage = "down"
+            if angle < 30 and self.stage == 'down':
+                self.stage = "up"
                 self.counter += 1
                 print(self.counter)
         except:
@@ -87,6 +82,16 @@ class ExerciseDetector():
             angle = 360 - angle
 
         return angle
+
+    def getCoordinates(self, landmarks):
+        if self.exercise==constant.EXER_DUMBBELL_CURL:
+            a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+            c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+        return (a, b, c)
 
     def __exit__(self):
         self.pose.close()

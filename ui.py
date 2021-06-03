@@ -44,6 +44,7 @@ class MyFame(tk.Frame):
         # OpenCV 동영상
         self.lbl.imgtk = imgtk
         self.lbl.configure(image=imgtk)
+        self.lbl._image_cache = imgtk
 
     def setFrame(self, frame):
         self.frame = frame

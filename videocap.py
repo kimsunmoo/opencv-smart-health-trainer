@@ -15,6 +15,7 @@ class VideoCap(threading.Thread):
     def run(self):
         while self.cap.isOpened():
             ret, frame = self.cap.read()
+            frame = cv2.flip(frame,1)
             if not ret:
                 self.cap.release()
             if self.setting == constant.EXER_DEFAULT:
@@ -23,3 +24,7 @@ class VideoCap(threading.Thread):
                 self.frame = self.ed.detection(frame)
         self.cap.release()
         print('video capture thread exit')
+
+    def getFrame(self):
+        return self.frame
+        
