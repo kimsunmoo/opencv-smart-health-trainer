@@ -7,8 +7,8 @@ import threading
 def play():
     time.sleep(1)
     while video.cap.isOpened():
-        myFrame.video_play(video.frame)
-        time.sleep(0.05)
+        myFrame.video_play(video.getFrame())
+        time.sleep(0.01)
     print('play therad exit')
 
 def main():
@@ -23,15 +23,15 @@ def main():
     myFrame = ui.MyFame(window)
 
     video = videocap.VideoCap()
+    video.daemon = True
     video.start()
 
     t = threading.Thread(target=play)
+    t.daemon = True
     t.start()
 
     window.mainloop()
     video.cap.release()
-    t.join()
-    video.join()
 
 if __name__ == '__main__':
     main()
