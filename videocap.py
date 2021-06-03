@@ -10,7 +10,10 @@ class VideoCap(threading.Thread):
         self.setting = constant.EXER_SQUAT
         self.cap = cv2.VideoCapture(0)
 
-        self.ed = exerciseDetector.ExerciseDetector()
+        ret, frame = self.cap.read()
+        self.height, self.width, _ = frame.shape
+
+        self.ed = exerciseDetector.ExerciseDetector(self.height, self.width)
     
     def run(self):
         while self.cap.isOpened():
