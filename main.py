@@ -7,6 +7,7 @@ import threading
 def play():
     time.sleep(1)
     while video.cap.isOpened():
+        video.setState(myFrame.setting, myFrame.ex_count)
         myFrame.video_play(video.getFrame())
         time.sleep(0.01)
     print('play therad exit')

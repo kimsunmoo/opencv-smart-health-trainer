@@ -16,12 +16,12 @@ class ExerciseDetector():
 
         self.red_filter = np.full((self.height ,self.width, 3), (0, 0, 100), dtype=np.uint8)
         
-
         self.counter = 0
         self.stage = None
         self.warn = False
 
         self.setting = constant.EXER_SQUAT
+        self.ex_countb = 0
 
     def detection(self, frame):
         
@@ -58,6 +58,7 @@ class ExerciseDetector():
         # Setup status box
         if self.warn:
             image = cv2.add(image, self.red_filter)
+        image = cv2.add(image, self.guide)
         cv2.rectangle(image, (0, 0), (225, 73), (245, 117, 16), -1)
         cv2.putText(image, 'REPS', (15, 12),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -99,7 +100,13 @@ class ExerciseDetector():
                     landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
-        print(a, ', ', b, ', ', c)
+        elif self.setting==constant.EXER_DUMBBELL_CURL:
+            a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+            c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
         return (a, b, c)
 
     def updateStates(self, angle):
@@ -109,10 +116,17 @@ class ExerciseDetector():
             self.stage = "up"
             self.counter += 1
             print(self.counter)
-        if angle < 170 and angle > 10:
+        if angle < 170 and angle > 10 and self.warn == True:
             self.warn = False
         else:
             self.warn = True
+
+    def setState(self, setting, ex_count):
+        self.setting = setting
+        self.ex_count = ex_count
+
+        self.guide = cv2.imread(constant.IMAGE_FILES[setting])
+        self.guide = cv2.resize(self.guide, dsize=(self.width, self.height), interpolation=cv2.INTER_AREA)
 
     def __exit__(self):
         self.pose.close()

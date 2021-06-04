@@ -7,7 +7,7 @@ class VideoCap(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
-        self.setting = constant.EXER_SQUAT
+        self.setting = constant.EXER_DEFAULT
         self.cap = cv2.VideoCapture(0)
 
         ret, frame = self.cap.read()
@@ -31,3 +31,6 @@ class VideoCap(threading.Thread):
     def getFrame(self):
         return self.frame
         
+    def setState(self, setting, ex_count):
+        self.setting = setting
+        self.ed.setState(setting,ex_count)
