@@ -10,6 +10,7 @@ class MyFame(tk.Frame):
 
         self.setting = constant.EXER_DEFAULT
         self.ex_count = 0
+        self.pressed = False
 
         self.master = master
         self.master.title("AniWatch")
@@ -56,6 +57,7 @@ class MyFame(tk.Frame):
     def start(self):
         self.setting=self.combobox.current()
         self.ex_count=int(self.textbox.get())
+        self.pressed = True
         print(self.setting,self.ex_count)
         print('start')
 

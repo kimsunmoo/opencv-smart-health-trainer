@@ -5,9 +5,12 @@ import time
 import threading
 
 def play():
-    time.sleep(1)
+    time.sleep(1)  
     while video.cap.isOpened():
-        video.setState(myFrame.setting, myFrame.ex_count)
+        if myFrame.pressed == True:
+            video.setState(myFrame.setting, myFrame.ex_count)
+            myFrame.pressed == False
+            print(myFrame.setting, myFrame.ex_count)
         myFrame.video_play(video.getFrame())
         time.sleep(0.01)
     print('play therad exit')
@@ -15,6 +18,7 @@ def play():
 def main():
     global myFrame
     global video
+
     global exerciseDetector
 
     capture = True
@@ -32,7 +36,9 @@ def main():
     t.start()
 
     window.mainloop()
+
     video.cap.release()
+
 
 if __name__ == '__main__':
     main()
