@@ -15,7 +15,7 @@ class MyFame(tk.Frame):
         self.master.title("AniWatch")
         
         menuFrm = tk.Frame(self)
-        values=['스쿼트', '덤벨 컬'] 
+        values=['스쿼트', '덤벨 컬 (오른손)', '덤벨 컬 (왼손)'] 
 
         self.combobox=tk.ttk.Combobox(menuFrm, height=15, values=values)
         self.combobox.grid(row=0, column=0)
