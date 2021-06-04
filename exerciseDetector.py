@@ -1,16 +1,27 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import numpy as np
 import constant
+
 class ExerciseDetector():
-    def __init__(self):
+    def __init__(self, height, width):
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_pose = mp.solutions.pose
 
         self.pose = self.mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
+        self.height = height
+        self.width = width
+
+        self.red_filter = np.full((self.height ,self.width, 3), (0, 0, 100), dtype=np.uint8)
+        
         self.counter = 0
         self.stage = None
+        self.warn = False
+
+        self.setting = constant.EXER_SQUAT
+        self.ex_countb = 0
 
     def detection(self, frame):
         
@@ -40,16 +51,14 @@ class ExerciseDetector():
                         tuple(np.multiply(b, [640, 480]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
                         )
-            if angle > 160:
-                self.stage = "down"
-            if angle < 30 and self.stage == 'down':
-                self.stage = "up"
-                self.counter += 1
-                print(self.counter)
+            self.updateStates(angle)
         except:
             pass
         # Render curl counter
         # Setup status box
+        if self.warn:
+            image = cv2.add(image, self.red_filter)
+        image = cv2.add(image, self.guide)
         cv2.rectangle(image, (0, 0), (225, 73), (245, 117, 16), -1)
         cv2.putText(image, 'REPS', (15, 12),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -84,7 +93,14 @@ class ExerciseDetector():
         return angle
 
     def getCoordinates(self, landmarks):
-        if self.exercise==constant.EXER_DUMBBELL_CURL:
+        if self.setting==constant.EXER_SQUAT:
+            a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+            c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+        elif self.setting==constant.EXER_DUMBBELL_CURL:
             a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                         landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
@@ -92,6 +108,25 @@ class ExerciseDetector():
             c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
         return (a, b, c)
+
+    def updateStates(self, angle):
+        if angle > 160:
+            self.stage = "down"
+        if angle < 30 and self.stage == "down":
+            self.stage = "up"
+            self.counter += 1
+            print(self.counter)
+        if angle < 170 and angle > 10 and self.warn == True:
+            self.warn = False
+        else:
+            self.warn = True
+
+    def setState(self, setting, ex_count):
+        self.setting = setting
+        self.ex_count = ex_count
+
+        self.guide = cv2.imread(constant.IMAGE_FILES[setting])
+        self.guide = cv2.resize(self.guide, dsize=(self.width, self.height), interpolation=cv2.INTER_AREA)
 
     def __exit__(self):
         self.pose.close()
