@@ -12,12 +12,15 @@ class VideoCap(threading.Thread):
 
         ret, frame = self.cap.read()
         self.height, self.width, _ = frame.shape
+        self.height = int(self.height * 1.5)
+        self.width = int(self.width * 1.5)
 
         self.ed = exerciseDetector.ExerciseDetector(self.height, self.width)
     
     def run(self):
         while self.cap.isOpened():
             ret, frame = self.cap.read()
+            frame = cv2.resize(frame, dsize=(0, 0), fx=1.5, fy=1.5, interpolation=cv2.INTER_AREA)
             frame = cv2.flip(frame,1)
             if not ret:
                 self.cap.release()

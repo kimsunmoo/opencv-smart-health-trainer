@@ -101,13 +101,21 @@ class ExerciseDetector():
             c = [landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
                     landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
 
-        elif self.setting==constant.EXER_DUMBBELL_CURL:
+        elif self.setting==constant.EXER_DUMBBELL_CURL_R:
             a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                         landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+
+        elif self.setting==constant.EXER_DUMBBELL_CURL_L:
+            a = [landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            b = [landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            c = [landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
 
         return (a, b, c)
 

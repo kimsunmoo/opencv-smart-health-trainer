@@ -13,5 +13,6 @@ IMAGE_FILES = ["img/SQUAT.png", "img/DUMBBELL_CURL_R.png", "img/DUMBBELL_CURL_L.
 #[3], [4] : 부상 위험 각도
 ANGLES = [
     [0, 160, 90, 180, 45],
-    [1, 45, 160, 170, 10]
+    [1, 45, 150, 170, 10],
+    [1, 45, 150, 170, 10]
 ]
