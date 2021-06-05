@@ -21,7 +21,7 @@ class ExerciseDetector():
         self.warn = False
 
         self.setting = constant.EXER_SQUAT
-        self.ex_countb = 0
+        self.ex_count = 0
 
     def detection(self, frame):
         
@@ -144,9 +144,16 @@ class ExerciseDetector():
     def setState(self, setting, ex_count):
         self.setting = setting
         self.ex_count = ex_count
+        self.counter = 0
 
         self.guide = cv2.imread(constant.IMAGE_FILES[setting])
         self.guide = cv2.resize(self.guide, dsize=(self.width, self.height), interpolation=cv2.INTER_AREA)
+
+    def isComplete(self):
+        if self.ex_count == self.counter and self.ex_count != 0:
+            self.counter = 0
+            self.stage = None
+            return True
 
     def __exit__(self):
         self.pose.close()

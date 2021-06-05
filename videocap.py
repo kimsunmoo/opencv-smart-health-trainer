@@ -37,3 +37,8 @@ class VideoCap(threading.Thread):
     def setState(self, setting, ex_count):
         self.setting = setting
         self.ed.setState(setting,ex_count)
+
+    def isComplete(self):
+        if self.ed.isComplete():
+            self.setting = -1
+            return True

@@ -11,6 +11,11 @@ def play():
             video.setState(myFrame.setting, myFrame.ex_count)
             myFrame.pressed = False
             print(myFrame.setting, myFrame.ex_count)
+        if (video.isComplete() == True):
+            myFrame.combobox.set("운동 선택")
+            myFrame.textbox.config(text="0")
+            myFrame.setting = -1
+            myFrame.ex_count = 0
         myFrame.video_play(video.getFrame())
         time.sleep(0.01)
     print('play therad exit')
