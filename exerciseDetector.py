@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import numpy as np
+import threading
 import constant
 
 class ExerciseDetector():
@@ -22,6 +23,8 @@ class ExerciseDetector():
 
         self.setting = constant.EXER_SQUAT
         self.ex_count = 0
+
+        self.lock = threading.Lock()
 
     def detection(self, frame):
         
@@ -48,7 +51,7 @@ class ExerciseDetector():
 
             # Visualize angle
             cv2.putText(image, str(angle),
-                        tuple(np.multiply(b, [640, 480]).astype(int)),
+                        tuple(np.multiply(b, [self.width, self.height]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
                         )
             self.updateStates(angle)
@@ -58,7 +61,11 @@ class ExerciseDetector():
         # Setup status box
         if self.warn:
             image = cv2.add(image, self.red_filter)
+        
+        self.lock.acquire
         image = cv2.add(image, self.guide)
+        self.lock.release
+
         cv2.rectangle(image, (0, 0), (225, 73), (245, 117, 16), -1)
         cv2.putText(image, 'REPS', (15, 12),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -146,8 +153,11 @@ class ExerciseDetector():
         self.ex_count = ex_count
         self.counter = 0
 
-        self.guide = cv2.imread(constant.IMAGE_FILES[setting])
-        self.guide = cv2.resize(self.guide, dsize=(self.width, self.height), interpolation=cv2.INTER_AREA)
+        if setting != -1:
+            self.lock.acquire
+            self.guide = cv2.imread(constant.IMAGE_FILES[setting])
+            self.guide = cv2.resize(self.guide, dsize=(self.width, self.height), interpolation=cv2.INTER_AREA)
+            self.lock.release
 
     def isComplete(self):
         if self.ex_count == self.counter and self.ex_count != 0:

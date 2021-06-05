@@ -1,5 +1,6 @@
 import ui
 import videocap
+import constant
 import tkinter as tk
 import time
 import threading
@@ -14,7 +15,6 @@ def play():
         if (video.isComplete() == True):
             myFrame.combobox.set("운동 선택")
             myFrame.textbox.config(text="0")
-            myFrame.setting = -1
             myFrame.ex_count = 0
         myFrame.video_play(video.getFrame())
         time.sleep(0.01)

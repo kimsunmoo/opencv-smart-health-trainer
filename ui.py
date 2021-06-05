@@ -66,5 +66,6 @@ class MyFame(tk.Frame):
         self.textbox.config(text="0")
         self.setting = constant.EXER_DEFAULT
         self.ex_count=0
-        print(self.ex_name,self.ex_count)
+        self.pressed = True
+        print(self.setting,self.ex_count)
         print('stop')
