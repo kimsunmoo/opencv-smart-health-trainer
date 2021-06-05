@@ -11,9 +11,8 @@ class VideoCap(threading.Thread):
         self.cap = cv2.VideoCapture(0)
 
         ret, frame = self.cap.read()
+        frame = cv2.resize(frame, dsize=(0, 0), fx=1.5, fy=1.5, interpolation=cv2.INTER_AREA)
         self.height, self.width, _ = frame.shape
-        self.height = int(self.height * 1.5)
-        self.width = int(self.width * 1.5)
 
         self.ed = exerciseDetector.ExerciseDetector(self.height, self.width)
     
@@ -40,5 +39,5 @@ class VideoCap(threading.Thread):
 
     def isComplete(self):
         if self.ed.isComplete():
-            self.setting = -1
+            self.setting = constant.EXER_DEFAULT
             return True
