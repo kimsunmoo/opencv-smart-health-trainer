@@ -18,7 +18,7 @@ class MyFame(tk.Frame):
         menuFrm = tk.Frame(self)
         values=['스쿼트', '덤벨 컬 (오른손)', '덤벨 컬 (왼손)'] 
 
-        self.combobox=tk.ttk.Combobox(menuFrm, height=15, values=values)
+        self.combobox=tk.ttk.Combobox(menuFrm, width=26, height=15, values=values)
         self.combobox.grid(row=0, column=0)
 
         self.combobox.set("운동 선택")
@@ -26,13 +26,13 @@ class MyFame(tk.Frame):
         lbl1 = tk.Label(menuFrm, text='횟수 : ', width=5)
         lbl1.grid(row=0, column=1)
 
-        self.textbox = tk.ttk.Entry(menuFrm, width=15, textvariable=str)
+        self.textbox = tk.ttk.Entry(menuFrm, width=26, textvariable=str)
         self.textbox.grid(row=0, column=2)
 
-        startButton = tk.Button(menuFrm, text='start', overrelief='solid', width=15, command=self.start, repeatdelay=1000, repeatinterval=100)
+        startButton = tk.Button(menuFrm, text='start', overrelief='solid', width=26, command=self.start, repeatdelay=1000, repeatinterval=100)
         startButton.grid(row=0, column=3)
 
-        stopButton = tk.Button(menuFrm, text='stop', overrelief='solid', width=15, command=self.stop, repeatdelay=1000, repeatinterval=100)
+        stopButton = tk.Button(menuFrm, text='stop', overrelief='solid', width=26, command=self.stop, repeatdelay=1000, repeatinterval=100)
         stopButton.grid(row=0, column=4)
 
         menuFrm.grid(row=0, column=0)
@@ -63,7 +63,7 @@ class MyFame(tk.Frame):
 
     def stop(self):
         self.combobox.set("운동 선택")
-        self.textbox.config(text="0")
+        self.textbox.delete(0, "end")
         self.setting = constant.EXER_DEFAULT
         self.ex_count=0
         self.pressed = True
