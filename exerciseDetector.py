@@ -94,29 +94,49 @@ class ExerciseDetector():
 
     def getCoordinates(self, landmarks):
         if self.setting==constant.EXER_SQUAT:
+            a = [landmarks[self.mp_pose.PoseLandmark.RIGHT_HIP.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+            b = [landmarks[self.mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
+            c = [landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
+
+        elif self.setting==constant.EXER_DUMBBELL_CURL_R:
             a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                         landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
-        elif self.setting==constant.EXER_DUMBBELL_CURL:
-            a = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            b = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
-                    landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
-            c = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                    landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+
+        elif self.setting==constant.EXER_DUMBBELL_CURL_L:
+            a = [landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            b = [landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            c = [landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
+
         return (a, b, c)
 
     def updateStates(self, angle):
-        if angle > 160:
-            self.stage = "down"
-        if angle < 30 and self.stage == "down":
-            self.stage = "up"
-            self.counter += 1
-            print(self.counter)
-        if angle < 170 and angle > 10 and self.warn == True:
+        angles = constant.ANGLES[self.setting]
+        if angles[0] == 0:
+            if angle > angles[1]:
+                self.stage = "up"
+            if angle < angles[2] and self.stage == "up":
+                self.stage = "down"
+                self.counter += 1
+                print(self.counter)
+        else :
+            if angle > angles[2]:
+                self.stage = "down"
+            if angle < angles[1] and self.stage == "down":
+                self.stage = "up"
+                self.counter += 1
+                print(self.counter)
+
+        if angle < angles[3] and angle > angles[4]:
             self.warn = False
         else:
             self.warn = True

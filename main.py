@@ -9,7 +9,7 @@ def play():
     while video.cap.isOpened():
         if myFrame.pressed == True:
             video.setState(myFrame.setting, myFrame.ex_count)
-            myFrame.pressed == False
+            myFrame.pressed = False
             print(myFrame.setting, myFrame.ex_count)
         myFrame.video_play(video.getFrame())
         time.sleep(0.01)
