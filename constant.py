@@ -1,3 +1,4 @@
+#운동 종류에 따른 상수 선언
 EXER_DEFAULT = -1
 EXER_SQUAT = 0
 EXER_DUMBBELL_CURL_R = 1

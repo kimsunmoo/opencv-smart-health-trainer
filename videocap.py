@@ -23,20 +23,23 @@ class VideoCap(threading.Thread):
             frame = cv2.flip(frame,1)
             if not ret:
                 self.cap.release()
+        
+            # 선택한 운동에 따라 다르게 처리된 프레임을 받아온다
             if self.setting == constant.EXER_DEFAULT:
                 self.frame = frame
             else :
                 self.frame = self.ed.detection(frame)
         self.cap.release()
-        print('video capture thread exit')
 
     def getFrame(self):
         return self.frame
-        
+    
+    # Tkinter의 정보를 받아와서 ed객체로 전달하는 함수
     def setState(self, setting, ex_count):
         self.setting = setting
         self.ed.setState(setting,ex_count)
 
+    # 운동이 완료되었는지 확인하는 함수 (완료 시 기본상태로 초기화)
     def isComplete(self):
         if self.ed.isComplete():
             self.setting = constant.EXER_DEFAULT
